@@ -14,7 +14,7 @@ example {a b : ℝ} (h1 : a - 5 * b = 4) (h2 : b + 2 = 3) : a = 9 := by
 
 
 example {m n : ℤ} (h1 : m + 3 ≤ 2 * n - 1) (h2 : n ≤ 5) : m ≤ 6 := by
-  have h3 :=
+  have h3 : m + 3 ≤ 9 :=
   calc
     m + 3 ≤ 2 * n - 1 := by rel [h1]
     _ ≤ 2 * 5 - 1 := by rel [h2]
@@ -23,20 +23,28 @@ example {m n : ℤ} (h1 : m + 3 ≤ 2 * n - 1) (h2 : n ≤ 5) : m ≤ 6 := by
 
 
 example {r s : ℚ} (h1 : s + 3 ≥ r) (h2 : s + r ≤ 3) : r ≤ 3 := by
-  have h3 : r ≤ 3 + s := by sorry -- justify with one tactic
-  have h4 : r ≤ 3 - s := by sorry -- justify with one tactic
+  have h3 : r ≤ 3 + s := by addarith[h1] -- justify with one tactic
+  have h4 : r ≤ 3 - s := by addarith[h2] -- justify with one tactic
   calc
-    r = (r + r) / 2 := by sorry -- justify with one tactic
-    _ ≤ (3 - s + (3 + s)) / 2 := by sorry -- justify with one tactic
-    _ = 3 := by sorry -- justify with one tactic
+    r = (r + r) / 2 := by ring -- justify with one tactic
+    _ ≤ (3 - s + (3 + s)) / 2 := by rel[h3,h4] -- justify with one tactic
+    _ = 3 := by ring -- justify with one tactic
 
 example {t : ℝ} (h1 : t ^ 2 = 3 * t) (h2 : t ≥ 1) : t ≥ 2 := by
-  have h3 :=
+  have h3 : t * t = 3 * t :=
   calc t * t = t ^ 2 := by ring
     _ = 3 * t := by rw [h1]
   cancel t at h3
   addarith [h3]
 
+example {t : ℝ} (h1 : t ^ 2 = 3 * t) (h2 : t ≥ 1) : t ≥ 2 := by
+  have h3 : t * t = 3 * t :=
+    calc
+      t * t
+        = t ^ 2 := by ring
+      _ = 3 * t := by rw[h1]
+  cancel t at h3
+  addarith[h3]
 
 example {a b : ℝ} (h1 : a ^ 2 = b ^ 2 + 1) (h2 : a ≥ 0) : a ≥ 1 := by
   have h3 :=
@@ -48,10 +56,22 @@ example {a b : ℝ} (h1 : a ^ 2 = b ^ 2 + 1) (h2 : a ≥ 0) : a ≥ 1 := by
 
 
 example {x y : ℤ} (hx : x + 3 ≤ 2) (hy : y + 2 * x ≥ 3) : y > 3 := by
-  sorry
+  have h1 : x ≤ -1 := by addarith[hx]
+  have h2 : - x ≥ 1 := by addarith[hx]
+  calc
+    y
+      ≥ - 2 * x + 3 := by addarith[hy]
+    _ = 2 * (- x) + 3 := by ring
+    _ ≥ 2 * 1 + 3 := by rel[h2]
+    _ > 3 := by numbers
 
 example (a b : ℝ) (h1 : -b ≤ a) (h2 : a ≤ b) : a ^ 2 ≤ b ^ 2 := by
-  sorry
+  have h3 : a + b ≥ 0 := by addarith[h1]
+  have h4 : a - b ≤ 0 := by addarith[h2]
+  have h5 : (a + b) * (a - b) ≤ 0 := by sorry
+  calc
+    a ^ 2
+      ≤ b ^ 2 := by sorry
 
 example (a b : ℝ) (h : a ≤ b) : a ^ 3 ≤ b ^ 3 := by
   sorry
