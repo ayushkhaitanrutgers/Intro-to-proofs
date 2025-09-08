@@ -10,14 +10,32 @@ This file should be worked through in parallel with the corresponding section of
 https://hrmacbeth.github.io/math2001/01_Proofs_by_Calculation.html#proving-equalities-in-lean
 
 I recommend splitting your screen to display the code and the book side by side! -/
+/-
+Let's try and study what the VSCode interface of Lean looks like.
+Q1. What is VSCode? VSCode is nice. It's much nicer than writing stuff on your computer
+What is this panel on the right? This Lean Infoview tells us whether our arguments are correct or not
+It's like your instructor always just looking over your shoulder, giving you feedback.
+-/
 
+example : (a + b)^2 = a^2 + b^2 + 2*a*b := by ring
+
+/-
+When writing lean proofs, we don't always have to write the starting to ending point journey.
+We also be a bit brief. As long as the Left hand side is thought to be the starting point, and
+the right hand side is thought to be the destination, and everything after := sign is thought to be
+justification, this is a correct proof.
+-/
 
 -- Example 1.2.1
 example {a b : ℚ} (h1 : a - b = 4) (h2 : a * b = 1) : (a + b) ^ 2 = 20 :=
   calc
-    (a + b) ^ 2 = (a - b) ^ 2 + 4 * (a * b) := by ring
-    _ = 4 ^ 2 + 4 * 1 := by rw [h1, h2]
+    (a + b) ^ 2 = (a - b) ^ 2 + 4 * (a * b) := by ring /-Note that justifications are always preceded by :=-/
+    _ = 4 ^ 2 + 4 * 1 := by rw[h1,h2]
     _ = 20 := by ring
+
+/-What does sorry mean?
+It's a placeholder for a correct justification.
+-/
 
 -- Example 1.2.2.
 -- Exercise: replace the words "sorry" with the correct Lean justification.
@@ -26,7 +44,7 @@ example {r s : ℝ} (h1 : s = 3) (h2 : r + 2 * s = -1) : r = -7 :=
     r = r + 2 * s - 2 * s := by ring
     _ = -1 - 2 * s := by rw[h2]
     _ = -1 - 2 * 3 := by rw[h1]
-    _ = -7 := by ring
+    _ = -7 := by numbers
 
 -- Example 1.2.3
 -- Exercise: replace the words "sorry" with the correct Lean justification.

@@ -10,7 +10,8 @@ example : 11 ≡ 3 [ZMOD 4] := by
   numbers
 
 example : -5 ≡ 1 [ZMOD 3] := by
-  sorry
+  use -2
+  numbers
 
 theorem Int.ModEq.add {n a b c d : ℤ} (h1 : a ≡ b [ZMOD n]) (h2 : c ≡ d [ZMOD n]) :
     a + c ≡ b + d [ZMOD n] := by
@@ -26,7 +27,15 @@ theorem Int.ModEq.add {n a b c d : ℤ} (h1 : a ≡ b [ZMOD n]) (h2 : c ≡ d [Z
 
 theorem Int.ModEq.sub {n a b c d : ℤ} (h1 : a ≡ b [ZMOD n]) (h2 : c ≡ d [ZMOD n]) :
     a - c ≡ b - d [ZMOD n] := by
-  sorry
+  dsimp[Int.ModEq] at *
+  obtain ⟨ k1, hk1⟩ := h1
+  obtain ⟨ k2, hk2⟩ := h2
+  use k1-k2
+  calc
+    a - c - (b - d)
+      = (a - b) - (c - d) := by ring
+    _ = (n * k1) - (n * k2) := by rw[hk1,hk2]
+    _ = n * (k1 - k2) := by ring
 
 theorem Int.ModEq.neg {n a b : ℤ} (h1 : a ≡ b [ZMOD n]) : -a ≡ -b [ZMOD n] := by
   sorry
@@ -52,7 +61,14 @@ theorem Int.ModEq.pow_two (h : a ≡ b [ZMOD n]) : a ^ 2 ≡ b ^ 2 [ZMOD n] := b
 
 
 theorem Int.ModEq.pow_three (h : a ≡ b [ZMOD n]) : a ^ 3 ≡ b ^ 3 [ZMOD n] := by
-  sorry
+  dsimp[Int.ModEq] at *
+  obtain ⟨ k, hk⟩ := h
+  use k*(a^2+b^2+a*b)
+  calc
+    a^3 - b^3
+      = (a-b)*(a^2+b^2+a*b) := by ring
+    _ = (n * k) * (a^2 + b^2 + a*b) := by rw[hk]
+    _ = n * (k * (a ^ 2 + b ^ 2 + a * b)) := by ring
 
 theorem Int.ModEq.pow (k : ℕ) (h : a ≡ b [ZMOD n]) : a ^ k ≡ b ^ k [ZMOD n] :=
   sorry -- we'll prove this later in the book
@@ -97,14 +113,23 @@ example : 34 ≡ 104 [ZMOD 5] := by
   sorry
 
 theorem Int.ModEq.symm (h : a ≡ b [ZMOD n]) : b ≡ a [ZMOD n] := by
-  sorry
+  dsimp[Int.ModEq] at *
+  obtain ⟨ k, hk⟩ := h
+  use -k
+  calc
+    b - a
+      = - (a - b) := by ring
+    _ = - (n * k) := by rw[hk]
+    _ = n * (-k) := by ring
 
 theorem Int.ModEq.trans (h1 : a ≡ b [ZMOD n]) (h2 : b ≡ c [ZMOD n]) :
     a ≡ c [ZMOD n] := by
   sorry
 
 example : a + n * c ≡ a [ZMOD n] := by
-  sorry
+  dsimp[Int.ModEq] at *
+  use c
+  ring
 
 
 example {a b : ℤ} (h : a ≡ b [ZMOD 5]) : 2 * a + 3 ≡ 2 * b + 3 [ZMOD 5] := by
@@ -115,4 +140,12 @@ example {m n : ℤ} (h : m ≡ n [ZMOD 4]) : 3 * m - 1 ≡ 3 * n - 1 [ZMOD 4] :=
 
 example {k : ℤ} (hb : k ≡ 3 [ZMOD 5]) :
     4 * k + k ^ 3 + 3 ≡ 4 * 3 + 3 ^ 3 + 3 [ZMOD 5] := by
-  sorry
+  dsimp[Int.ModEq] at *
+  obtain ⟨ l, hl⟩ := hb
+  use 25*l^3 + 45*l^2 + 31*l
+  have h : k = 5*l+3 := by addarith[hl]
+  rw[h]
+  ring
+
+--k = 5l+3
+--k^3+4k+3-42 = 125 l^3 + 225 l^2 + 135 l +27 + 20l + 12 + 3 - 42= 125 l^3 + 225 l^2 + 155 l

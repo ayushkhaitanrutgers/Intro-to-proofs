@@ -9,7 +9,7 @@ namespace Nat
 
 
 example (n : ℕ) : 2 ^ n ≥ n + 1 := by
-  simple_induction n with k IH
+  simple_induction n with k IH --IH is the induction hypothesis
   · -- base case
     numbers
   · -- inductive step
@@ -22,6 +22,7 @@ example (n : ℕ) : 2 ^ n ≥ n + 1 := by
 example (n : ℕ) : Even n ∨ Odd n := by
   simple_induction n with k IH
   · -- base case
+    left
     sorry
   · -- inductive step
     obtain ⟨x, hx⟩ | ⟨x, hx⟩ := IH

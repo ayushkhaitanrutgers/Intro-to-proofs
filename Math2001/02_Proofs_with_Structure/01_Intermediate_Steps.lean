@@ -68,10 +68,23 @@ example {x y : ℤ} (hx : x + 3 ≤ 2) (hy : y + 2 * x ≥ 3) : y > 3 := by
 example (a b : ℝ) (h1 : -b ≤ a) (h2 : a ≤ b) : a ^ 2 ≤ b ^ 2 := by
   have h3 : a + b ≥ 0 := by addarith[h1]
   have h4 : a - b ≤ 0 := by addarith[h2]
-  have h5 : (a + b) * (a - b) ≤ 0 := by sorry
+  have h5 : a ^ 2 - b ^ 2 ≤ 0 := by sorry
+  have h6 : b ≥ -a := by addarith[h1,h2]
+  have h7 : b + b ≥ a - a := by addarith[h6,h2]
+  have h8 : b + b ≥ 0 := by addarith[h7]
+  have h9 : b + b = 2 * b := by ring
+  have h10 : 2 * b ≥ 0 := by
+    rw[← h9]
+    exact h8
+  have h11 : b ≥ 0 := by addarith[h10]
   calc
     a ^ 2
-      ≤ b ^ 2 := by sorry
+      = a ^ 2 - b ^ 2 + b ^ 2 := by ring
+    _ ≤ 0 + b ^ 2 := by addarith[h5]
+    _ = b ^ 2 := by ring
+
+example (a b c : ℝ) (h1 : - a ≥ 0) (h2 : b + c ≥ 0) : (- a) * (b + c) ≥ 0 := by exact
+  mul_nonneg h1 h2
 
 example (a b : ℝ) (h : a ≤ b) : a ^ 3 ≤ b ^ 3 := by
   sorry

@@ -11,12 +11,8 @@ example {x : ℚ} (hx : 3 * x = 2) : x ≠ 1 := by
     _ = 2 / 3 := by rw [hx]
     _ < 1 := by numbers
 
-example {y : ℝ} : y ^ 2 + 1 ≠ 0 := by
-  apply ne_of_lt
-  calc
-    y ^ 2 + 1
-      ≥ 1 := by extra
-      ≠ 0 := by sorry
+example {y : ℝ} : y ^ 2 + 1 ≠ 0 := by sorry
+
 
 example {a b : ℝ} (h1 : a ^ 2 + b ^ 2 = 0) : a ^ 2 = 0 := by
   apply le_antisymm

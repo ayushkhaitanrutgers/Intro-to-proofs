@@ -15,6 +15,7 @@ example {x y : ℝ} (h : x = 1 ∨ y = -1) : x * y + x = y + 1 := by
     _ = -1 + 1 := by ring
     _ = y + 1 := by rw [hy]
 
+
 example {n : ℕ} : n ^ 2 ≠ 2 := by
   have hn := le_or_succ_le n 1
   obtain hn | hn := hn
@@ -22,7 +23,13 @@ example {n : ℕ} : n ^ 2 ≠ 2 := by
   calc
     n ^ 2 ≤ 1 ^ 2 := by rel [hn]
     _ < 2 := by numbers
-  sorry
+  apply ne_of_gt
+  calc
+    n^2
+      = n*n := by ring
+    _  ≥ 2*2 := by rel[hn]
+    _  = 4 := by numbers
+    _ > 2 := by numbers
 
 example {x : ℝ} (hx : 2 * x + 1 = 5) : x = 1 ∨ x = 2 := by
   right
@@ -33,12 +40,19 @@ example {x : ℝ} (hx : 2 * x + 1 = 5) : x = 1 ∨ x = 2 := by
 
 
 example {x : ℝ} (hx : x ^ 2 - 3 * x + 2 = 0) : x = 1 ∨ x = 2 := by
-  have h1 :=
+  have h_factor : (x - 1) * (x - 2) = 0 := by
     calc
-    (x - 1) * (x - 2) = x ^ 2 - 3 * x + 2 := by ring
-    _ = 0 := by rw [hx]
-  have h2 := eq_zero_or_eq_zero_of_mul_eq_zero h1
-  sorry
+      (x - 1) * (x - 2) = x^2 - 3*x + 2 := by ring
+      _ = 0 := by rw [hx]
+  rw [mul_eq_zero] at h_factor
+  obtain ha | hb := h_factor
+  left
+  addarith[ha]
+  right
+  addarith[hb]
+
+
+
 
 example {n : ℤ} : n ^ 2 ≠ 2 := by
   have hn0 := le_or_succ_le n 0
@@ -67,6 +81,31 @@ example {n : ℤ} : n ^ 2 ≠ 2 := by
         (2:ℤ) < 2 ^ 2 := by numbers
         _ ≤ n ^ 2 := by rel [hn]
 
+example {n : ℤ} : n ^ 2 ≠ 2 := by
+  have h := le_or_succ_le n 0
+  obtain h1 | h2 := h
+  have h3: -n ≥ 0 := by addarith[h1]
+  have h4 := le_or_succ_le (-n) 1
+  obtain h5 | h6 := h4
+  apply ne_of_lt
+  calc
+    n ^ 2
+      = (-n)*(-n) := by ring
+    _ ≤ 1*1 := by rel[h5]
+    _ = 1 := by numbers
+    _ < 2 := by numbers
+  apply ne_of_gt
+  calc
+    n ^ 2
+      = (-n)*(-n) := by ring
+    _ ≥ 2*2 := by rel[h6]
+    _ = 4 := by numbers
+    _ > 2 := by numbers
+  sorry
+
+
+
+
 
 /-! # Exercises -/
 
@@ -87,7 +126,8 @@ example {s t : ℚ} (h : s = 3 - t) : s + t = 3 ∨ s + t = 5 := by
   sorry
 
 example {a b : ℚ} (h : a + 2 * b < 0) : b < a / 2 ∨ b < - a / 2 := by
-  sorry
+  right
+  addarith[h]
 
 example {x y : ℝ} (h : y = 2 * x + 1) : x < y / 2 ∨ x > y / 2 := by
   sorry
@@ -102,13 +142,54 @@ example {t : ℝ} (ht : t ^ 3 = t ^ 2) : t = 1 ∨ t = 0 := by
   sorry
 
 example {n : ℕ} : n ^ 2 ≠ 7 := by
-  sorry
+  have hn := le_or_succ_le n 2
+  obtain h1 | h2 := hn
+  apply ne_of_lt
+  calc
+    n^2
+      = n*n := by ring
+    _ ≤ 2*2 := by rel[h1]
+    _ = 4 := by numbers
+    _ < 7 := by numbers
+  apply ne_of_gt
+  calc
+    n^2
+      = n*n := by ring
+    _ ≥ 3 * 3 := by rel[h2]
+    _ = 9 := by numbers
+    _ > 7 := by numbers
 
 example {x : ℤ} : 2 * x ≠ 3 := by
-  sorry
+  have h := le_or_succ_le x 1
+  obtain h1 | h2 := h
+  apply ne_of_lt
+  calc
+    2*x
+      ≤ 2*1 := by rel[h1]
+    _ = 2 := by numbers
+    _ < 3 := by numbers
+  apply ne_of_gt
+  calc
+    2*x
+      ≥ 2*2 := by rel[h2]
+    _ = 4 := by numbers
+    _ > 3 := by numbers
 
 example {t : ℤ} : 5 * t ≠ 18 := by
   sorry
 
 example {m : ℕ} : m ^ 2 + 4 * m ≠ 46 := by
-  sorry
+  have h := le_or_succ_le m 5
+  obtain h1 | h2 := h
+  apply ne_of_lt
+  calc
+    m^2+4*m
+      ≤ 5^2 + 4*5 := by rel[h1]
+    _ = 45 := by numbers
+    _ < 46 := by numbers
+  apply ne_of_gt
+  calc
+    m^2+4*m
+      ≥ 6^2+4*6 := by rel[h2]
+    _ = 60 := by numbers
+    _ > 46 := by numbers
