@@ -20,7 +20,23 @@ example {n : ℕ} (hn : ∀ m, n ∣ m) : n = 1 := by
 
 
 example {a b : ℝ} (h : ∀ x, x ≥ a ∨ x ≤ b) : a ≤ b := by
-  sorry
+  have h1 := h b
+  have h2 := h a
+  cases h1 with
+  | inl h1a =>
+    cases h2 with
+    | inl h2a =>
+      exact le_of_le_of_le h2a h1a
+    | inr h2b =>
+      exact le_trans h2b h1a
+  | inr h1b =>
+    cases h2 with
+    | inl h2a =>
+      exact le_trans h2a h1b
+    | inr h2b =>
+      exact le_of_le_of_le h1b h2b
+
+
 
 example {a b : ℝ} (ha1 : a ^ 2 ≤ 2) (hb1 : b ^ 2 ≤ 2) (ha2 : ∀ y, y ^ 2 ≤ 2 → y ≤ a)
     (hb2 : ∀ y, y ^ 2 ≤ 2 → y ≤ b) :

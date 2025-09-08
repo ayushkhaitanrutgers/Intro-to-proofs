@@ -14,17 +14,16 @@ example {x y : ℤ} (h : 2 * x - y = 4 ∧ y - x + 1 = 2) : x = 5 := by
 
 
 example {p : ℚ} (hp : p ^ 2 ≤ 8) : p ≥ -5 := by
-  have hp' : -3 ≤ p ∧ p ≤ 3
-  · apply abs_le_of_sq_le_sq'
+  have hp' : -3 ≤ p ∧ p ≤ 3 := by
+    apply abs_le_of_sq_le_sq' --this changes the goal
     calc
       p ^ 2 ≤ 9 := by addarith [hp]
       _ = 3 ^ 2 := by numbers
     numbers
-  sorry
+  obtain ⟨ h1, h2⟩ := hp'
+  addarith[h1]
 
 
-example {p : ℚ} (hp : p ^ 2 ≤ 8) : p ≥ -5 := by
-  sorry
 
 example {a b : ℝ} (h1 : a - 5 * b = 4) (h2 : b + 2 = 3) : a = 9 ∧ b = 1 := by
   have h3 : b = 1 := by
@@ -94,7 +93,14 @@ example {m n : ℤ} (H : n ≤ 8 ∧ m + 5 ≤ n) : m ≤ 3 := by
   sorry
 
 example {p : ℤ} (hp : p + 2 ≥ 9) : p ^ 2 ≥ 49 ∧ 7 ≤ p := by
-  sorry
+  have h1 : p ≥ 7 := by
+    addarith[hp]
+  constructor
+  calc
+    p^2 = p * p := by ring
+    _ ≥ 7 * 7 := by rel[h1]
+    _ = 49 := by numbers
+  rel[h1]
 
 example {a : ℚ} (h : a - 1 ≥ 5) : a ≥ 6 ∧ 3 * a ≥ 10 := by
   sorry
