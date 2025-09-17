@@ -65,3 +65,20 @@ example {a b c d e f : ℤ} (h1 : a * d = b * c) (h2 : c * f = d * e) :
       = a * d * f - d * e * b := by ring
     _ = b * c * f - c * f * b := by rw[h1,h2]
     _ = 0 := by ring
+
+example {r s : ℝ} (h1 : s = 3) (h2 : r + 2 * s = -1) : r = -7 :=
+  calc
+    --what am I trying to proce? I'm trying to prove that r = -7.
+    --I've been given that r+2s=-1, and s=3
+    r
+      = (r+2*s)-(2*s) := by ring
+    _ = -1 -(2*3) := by rw[h2, h1]
+    _ = -7 := by numbers
+
+example {a b c d e f : ℤ} (h1 : a * d = b * c) (h2 : c * f = d * e) :
+    d * (a * f - b * e) = 0 :=
+      calc
+        d * (a*f - b*e)
+          = (a* d) * f - (d * e) * b := by ring
+        _ = b * c * f - c * f * b := by rw[h1,h2]
+        _ = 0 := by ring

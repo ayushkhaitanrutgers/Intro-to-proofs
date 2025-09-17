@@ -188,5 +188,12 @@ theorem Odd.pow {a : ℕ} (ha : Odd a) (n : ℕ) : Odd (a ^ n) := by
   use 0
   ring
   obtain ⟨ l, hl⟩ := IH
+  --4kl+2k+2l+1=2(2kl+k+l)+1
+  use 2*k*l+k+l
+  calc
+    a^(p+1)=a^p*a := by ring
+    _ = (2*l+1)*(2*k+1) := by rw[hl,hk]
+    _ = 2 * (2*k * l + k + l) + 1 := by ring
+
 theorem Nat.even_of_pow_even {a n : ℕ} (ha : Even (a ^ n)) : Even a := by
   sorry
